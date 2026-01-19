@@ -138,7 +138,7 @@ Go to [connect.linux.do](https://connect.linux.do) to create/configure:
 *   **App Description**: `LDC Store Next`
 *   **Callback URL**: `https://store.chatgpt.org.uk/api/auth/callback/linuxdo`
 
-Get **Client ID** and **Client Secret**, and fill them into Vercel Environment Variables as `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET`.
+Get **Client ID** and **Client Secret**, and fill them into environment variables as `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` (**Secret recommended**).
 
 ### 2. EPay (Linux DO Credit)
 Go to [credit.linux.do](https://credit.linux.do) to create/configure:
@@ -148,11 +148,11 @@ Go to [credit.linux.do](https://credit.linux.do) to create/configure:
 *   **Callback URI**: `https://store.chatgpt.org.uk/callback`
 *   **Notify URL**: `https://store.chatgpt.org.uk/api/notify`
 
-Get **Client ID** and **Client Secret**, and fill them into Vercel Environment Variables as `MERCHANT_ID` and `MERCHANT_KEY`.
+Get **Client ID** and **Client Secret**, and fill them into environment variables as `MERCHANT_ID` and `MERCHANT_KEY` (**Secret recommended**).
 
 ### 3. Other Variables
-*   **ADMIN_USERS**: Admin usernames, comma separated (e.g., `chatgpt,admin`).
-*   **NEXT_PUBLIC_APP_URL**: Your full app URL (e.g., `https://store.chatgpt.org.uk`).
+*   **ADMIN_USERS**: Admin usernames, comma separated (e.g., `chatgpt,admin`) (**Secret recommended**).
+*   **NEXT_PUBLIC_APP_URL**: Your full app URL (e.g., `https://store.chatgpt.org.uk`). **Must be Text, not Secret**.
 
 ## 🛠️ Local Development
 

@@ -109,12 +109,12 @@
 
 | 变量名 | 类型 | 说明 |
 |--------|------|------|
-| `OAUTH_CLIENT_ID` | Text 或 Secret | Linux DO Connect Client ID |
+| `OAUTH_CLIENT_ID` | Secret | Linux DO Connect Client ID |
 | `OAUTH_CLIENT_SECRET` | Secret | Linux DO Connect Client Secret |
-| `MERCHANT_ID` | Text 或 Secret | EPay 商户 ID |
+| `MERCHANT_ID` | Secret | EPay 商户 ID |
 | `MERCHANT_KEY` | Secret | EPay 商户 Key |
 | `AUTH_SECRET` | Secret | 随机字符串 (可用 `openssl rand -base64 32` 生成) |
-| `ADMIN_USERS` | Text | 管理员用户名，逗号分隔 |
+| `ADMIN_USERS` | Secret | 管理员用户名，逗号分隔 |
 | `NEXT_PUBLIC_APP_URL` | **Text** | 你的 Workers 域名 (如 `https://ldc-shop.xxx.workers.dev`) |
 
 > ⚠️ **重要**: `NEXT_PUBLIC_APP_URL` **必须**设置为 Text 类型，不能用 Secret，否则支付签名会失败！
@@ -161,13 +161,13 @@
 
 | 变量名 | 说明 |
 |---|---|
-| `OAUTH_CLIENT_ID` | Linux DO Connect Client ID |
-| `OAUTH_CLIENT_SECRET` | Linux DO Connect Client Secret |
-| `MERCHANT_ID` | EPay 商户 ID |
-| `MERCHANT_KEY` | EPay 商户 Key |
-| `AUTH_SECRET` | NextAuth 加密密钥 |
-| `ADMIN_USERS` | 管理员用户名列表 (逗号分隔) |
-| `NEXT_PUBLIC_APP_URL` | 部署后的完整 URL (用于回调) |
+| `OAUTH_CLIENT_ID` | Linux DO Connect Client ID（建议 Secret） |
+| `OAUTH_CLIENT_SECRET` | Linux DO Connect Client Secret（Secret） |
+| `MERCHANT_ID` | EPay 商户 ID（建议 Secret） |
+| `MERCHANT_KEY` | EPay 商户 Key（Secret） |
+| `AUTH_SECRET` | NextAuth 加密密钥（Secret） |
+| `ADMIN_USERS` | 管理员用户名列表 (逗号分隔，建议 Secret) |
+| `NEXT_PUBLIC_APP_URL` | 部署后的完整 URL (用于回调，必须 Text) |
 
 ## 📄 许可证
 MIT
