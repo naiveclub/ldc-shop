@@ -137,6 +137,8 @@
     "refund": {
         "requestTitle": "申请退款",
         "requestHint": "提交退款申请，等待管理员审核。",
+        "requestConfirmTitle": "确认提交退款申请？",
+        "requestConfirmMessage": "是否确定提交退款申请？请确认您已认真阅读商品说明和退款政策。",
         "reasonPlaceholder": "退款原因（可选）...",
         "requestButton": "提交申请",
         "requested": "已提交退款申请",
@@ -687,6 +689,7 @@
         "visit": "访问",
         "hideNavLabel": "隐藏导航入口",
         "hideNavHint": "未加入导航时可隐藏顶部/底部的 LDC 导航入口。",
+        "hideNavLockedHint": "已加入导航后入口将始终显示，无法隐藏。",
         "hideNavEnabled": "已隐藏",
         "hideNavDisabled": "显示中"
     }

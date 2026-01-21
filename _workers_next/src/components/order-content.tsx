@@ -342,6 +342,9 @@ export function OrderContent({ order, canViewKey, isOwner, refundRequest }: Orde
                                 <div className="flex justify-end">
                                     <Button
                                         onClick={async () => {
+                                            if (!confirm(`${t('refund.requestConfirmTitle')}\n\n${t('refund.requestConfirmMessage')}`)) {
+                                                return
+                                            }
                                             setSubmitting(true)
                                             try {
                                                 await requestRefund(order.orderId, reason)

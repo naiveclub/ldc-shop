@@ -607,26 +607,26 @@ export function AdminSettingsContent({ stats, shopName, shopDescription, shopLog
                                 {registryJoined ? t('registry.statusJoined') : t('registry.statusNotJoined')}
                             </span>
                         </div>
-                        {!registryJoined && (
-                            <div className="space-y-2 pt-2">
-                                <div className="flex items-center justify-between gap-4">
-                                    <Label htmlFor="registry-hide-nav" className="cursor-pointer">
-                                        {t('registry.hideNavLabel')}
-                                    </Label>
-                                    <Button
-                                        id="registry-hide-nav"
-                                        variant={hideRegistryNav ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => handleToggleRegistryNav(!hideRegistryNav)}
-                                        disabled={savingRegistryNav}
-                                        className={hideRegistryNav ? "bg-slate-900 hover:bg-slate-800 text-white" : ""}
-                                    >
-                                        {hideRegistryNav ? t('registry.hideNavEnabled') : t('registry.hideNavDisabled')}
-                                    </Button>
-                                </div>
-                                <p className="text-xs text-muted-foreground">{t('registry.hideNavHint')}</p>
+                        <div className="space-y-2 pt-2">
+                            <div className="flex items-center justify-between gap-4">
+                                <Label htmlFor="registry-hide-nav" className="cursor-pointer">
+                                    {t('registry.hideNavLabel')}
+                                </Label>
+                                <Button
+                                    id="registry-hide-nav"
+                                    variant={registryJoined ? "outline" : hideRegistryNav ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => handleToggleRegistryNav(!hideRegistryNav)}
+                                    disabled={savingRegistryNav || registryJoined}
+                                    className={!registryJoined && hideRegistryNav ? "bg-slate-900 hover:bg-slate-800 text-white" : ""}
+                                >
+                                    {registryJoined ? t('registry.hideNavDisabled') : hideRegistryNav ? t('registry.hideNavEnabled') : t('registry.hideNavDisabled')}
+                                </Button>
                             </div>
-                        )}
+                            <p className="text-xs text-muted-foreground">
+                                {registryJoined ? t('registry.hideNavLockedHint') : t('registry.hideNavHint')}
+                            </p>
+                        </div>
                     </CardContent>
                 </Card>
             )}

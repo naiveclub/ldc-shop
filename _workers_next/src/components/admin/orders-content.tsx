@@ -70,6 +70,7 @@ export function AdminOrdersContent({
     const [queryValue, setQueryValue] = useState(query || "")
     const [statusValue, setStatusValue] = useState<string>(status || "all")
     const [selected, setSelected] = useState<Record<string, boolean>>({})
+    const [deleting, setDeleting] = useState(false)
 
     const getStatusBadgeVariant = (status: string | null) => {
         switch (status) {
@@ -178,9 +179,11 @@ export function AdminOrdersContent({
                         type="button"
                         variant="destructive"
                         size="sm"
-                        disabled={!selectedIds.length}
+                        disabled={!selectedIds.length || deleting}
                         onClick={async () => {
+                            if (deleting) return
                             if (!confirm(t('admin.orders.confirmDeleteSelected'))) return
+                            setDeleting(true)
                             try {
                                 await deleteOrders(selectedIds)
                                 toast.success(t('common.success'))
@@ -188,6 +191,8 @@ export function AdminOrdersContent({
                                 router.refresh()
                             } catch (e: any) {
                                 toast.error(e.message)
+                            } finally {
+                                setDeleting(false)
                             }
                         }}
                     >

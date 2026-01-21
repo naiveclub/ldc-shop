@@ -28,6 +28,9 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
     const { t } = useI18n()
     const router = useRouter()
     const [selectedIds, setSelectedIds] = useState<number[]>([])
+    const [submitting, setSubmitting] = useState(false)
+    const [batchDeleting, setBatchDeleting] = useState(false)
+    const [deletingId, setDeletingId] = useState<number | null>(null)
 
     const toggleSelectAll = () => {
         if (selectedIds.length === unusedCards.length) {
@@ -46,9 +49,10 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
     }
 
     const handleBatchDelete = async () => {
-        if (!selectedIds.length) return
+        if (!selectedIds.length || batchDeleting) return
 
         if (confirm(t('admin.cards.confirmBatchDelete', { count: selectedIds.length }))) {
+            setBatchDeleting(true)
             try {
                 await deleteCards(selectedIds)
                 toast.success(t('common.success'))
@@ -56,17 +60,23 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
                 router.refresh()
             } catch (e: any) {
                 toast.error(e.message)
+            } finally {
+                setBatchDeleting(false)
             }
         }
     }
 
     const handleSubmit = async (formData: FormData) => {
+        if (submitting) return
+        setSubmitting(true)
         try {
             await addCards(formData)
             toast.success(t('common.success'))
             router.refresh()
         } catch (e: any) {
             toast.error(e.message)
+        } finally {
+            setSubmitting(false)
         }
     }
 
@@ -90,8 +100,10 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
                     <CardContent>
                         <form action={handleSubmit} className="space-y-4">
                             <input type="hidden" name="product_id" value={productId} />
-                            <Textarea name="cards" placeholder={t('admin.cards.placeholder')} rows={10} className="font-mono text-sm" required />
-                            <Button type="submit" className="w-full">{t('common.add')}</Button>
+                            <Textarea name="cards" placeholder={t('admin.cards.placeholder')} rows={10} className="font-mono text-sm" required disabled={submitting} />
+                            <Button type="submit" className="w-full" disabled={submitting}>
+                                {submitting ? t('common.processing') : t('common.add')}
+                            </Button>
                         </form>
                     </CardContent>
                 </Card>
@@ -120,6 +132,7 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
                                         size="sm"
                                         className="h-7 text-xs"
                                         onClick={handleBatchDelete}
+                                        disabled={batchDeleting}
                                     >
                                         {t('admin.cards.batchDelete')}
                                     </Button>
@@ -143,16 +156,21 @@ export function CardsContent({ productId, productName, unusedCards }: CardsConte
                                         size="icon"
                                         className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                                         onClick={async () => {
+                                            if (deletingId === c.id) return
                                             if (confirm(t('common.confirm') + '?')) {
+                                                setDeletingId(c.id)
                                                 try {
                                                     await deleteCard(c.id)
                                                     toast.success(t('common.success'))
                                                     router.refresh()
                                                 } catch (e: any) {
                                                     toast.error(e.message)
+                                                } finally {
+                                                    setDeletingId(null)
                                                 }
                                             }
                                         }}
+                                        disabled={deletingId === c.id}
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>

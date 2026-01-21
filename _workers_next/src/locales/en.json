@@ -137,6 +137,8 @@
     "refund": {
         "requestTitle": "Request a refund",
         "requestHint": "Submit a refund request and wait for admin approval.",
+        "requestConfirmTitle": "Confirm refund request?",
+        "requestConfirmMessage": "Are you sure you want to request a refund? Please confirm you have read the product description and refund policy.",
         "reasonPlaceholder": "Reason (optional)...",
         "requestButton": "Request refund",
         "requested": "Refund request submitted",
@@ -687,6 +689,7 @@
         "visit": "Visit",
         "hideNavLabel": "Hide navigator entry",
         "hideNavHint": "Hide the LDC navigator link if you haven't joined.",
+        "hideNavLockedHint": "After joining, the navigator entry must stay visible.",
         "hideNavEnabled": "Hidden",
         "hideNavDisabled": "Visible"
     }

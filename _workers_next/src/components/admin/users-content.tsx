@@ -44,6 +44,7 @@ export function UsersContent({ data }: UsersContentProps) {
     const [editingUser, setEditingUser] = useState<User | null>(null)
     const [newPoints, setNewPoints] = useState('')
     const [saving, setSaving] = useState(false)
+    const [blockingId, setBlockingId] = useState<string | null>(null)
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
@@ -89,15 +90,19 @@ export function UsersContent({ data }: UsersContentProps) {
     }
 
     const handleToggleBlock = async (user: User) => {
+        if (blockingId === user.userId) return
         const action = user.isBlocked ? 'unblock' : 'block'
         if (!confirm(t(`admin.users.confirm${action.charAt(0).toUpperCase() + action.slice(1)}`))) return
 
         try {
+            setBlockingId(user.userId)
             await toggleBlock(user.userId, !user.isBlocked)
             toast.success(t('common.success'))
             router.refresh()
         } catch (e: any) {
             toast.error(e.message || t('common.error'))
+        } finally {
+            setBlockingId(null)
         }
     }
 
@@ -173,6 +178,7 @@ export function UsersContent({ data }: UsersContentProps) {
                                             size="sm"
                                             onClick={() => handleToggleBlock(user)}
                                             title={user.isBlocked ? t('admin.users.unblock') : t('admin.users.block')}
+                                            disabled={blockingId === user.userId}
                                         >
                                             {user.isBlocked ? <CheckCircle className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
                                         </Button>

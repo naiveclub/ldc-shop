@@ -19,6 +19,7 @@ export default function ProductForm({ product, categories = [] }: { product?: an
     const { t } = useI18n()
 
     async function handleSubmit(formData: FormData) {
+        if (loading) return
         setLoading(true)
         try {
             await saveProduct(formData)

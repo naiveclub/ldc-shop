@@ -18,6 +18,7 @@ export function AdminCategoriesContent({ categories }: { categories: CategoryRow
   const [icon, setIcon] = useState("")
   const [sortOrder, setSortOrder] = useState("0")
   const [saving, setSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const sorted = useMemo(() => {
     return [...categories].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0) || a.name.localeCompare(b.name))
@@ -132,14 +133,19 @@ export function AdminCategoriesContent({ categories }: { categories: CategoryRow
                     variant="destructive"
                     size="sm"
                     onClick={async () => {
+                      if (deletingId === c.id) return
                       if (!confirm(t('common.confirm') + '?')) return
+                      setDeletingId(c.id)
                       try {
                         await deleteCategory(c.id)
                         toast.success(t('common.success'))
                       } catch (e: any) {
                         toast.error(e.message)
+                      } finally {
+                        setDeletingId(null)
                       }
                     }}
+                    disabled={deletingId === c.id}
                   >
                     {t('common.delete')}
                   </Button>
@@ -152,4 +158,3 @@ export function AdminCategoriesContent({ categories }: { categories: CategoryRow
     </div>
   )
 }
-

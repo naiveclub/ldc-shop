@@ -6,7 +6,7 @@ import { products, cards, reviews, categories } from "@/lib/db/schema"
 import { eq, sql, inArray, and, or, isNull, lte } from "drizzle-orm"
 import { sendTelegramMessage } from "@/lib/notifications"
 import { revalidatePath, revalidateTag } from "next/cache"
-import { setSetting, recalcProductAggregates, recalcProductAggregatesForMany } from "@/lib/db/queries"
+import { setSetting, getSetting, recalcProductAggregates, recalcProductAggregatesForMany } from "@/lib/db/queries"
 
 // Check Admin Helper
 // Check Admin Helper
@@ -416,7 +416,9 @@ export async function saveNoIndex(enabled: boolean) {
 
 export async function saveRegistryHideNav(enabled: boolean) {
     await checkAdmin()
-    await setSetting('registry_hide_nav', enabled ? 'true' : 'false')
+    const optIn = await getSetting('registry_opt_in')
+    const shouldHide = enabled && optIn !== 'true'
+    await setSetting('registry_hide_nav', shouldHide ? 'true' : 'false')
     revalidatePath('/admin/settings')
     revalidatePath('/')
 }

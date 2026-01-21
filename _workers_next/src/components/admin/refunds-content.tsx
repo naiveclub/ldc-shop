@@ -23,6 +23,7 @@ function statusVariant(status: string | null) {
 export function AdminRefundsContent({ requests }: { requests: any[] }) {
   const { t } = useI18n()
   const [query, setQuery] = useState("")
+  const [processingId, setProcessingId] = useState<number | null>(null)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -41,8 +42,10 @@ export function AdminRefundsContent({ requests }: { requests: any[] }) {
   }, [query, requests])
 
   const handle = async (id: number, action: 'approve' | 'reject') => {
+    if (processingId === id) return
     const note = prompt(t('admin.refunds.adminNotePrompt')) || ''
     try {
+      setProcessingId(id)
       if (action === 'approve') {
         const result = await adminApproveRefund(id, note)
         if (result?.processed) {
@@ -62,6 +65,8 @@ export function AdminRefundsContent({ requests }: { requests: any[] }) {
       }
     } catch (e: any) {
       toast.error(e.message)
+    } finally {
+      setProcessingId(null)
     }
   }
 
@@ -117,8 +122,8 @@ export function AdminRefundsContent({ requests }: { requests: any[] }) {
                   <div className="flex justify-end gap-2">
                     {(r.status === 'pending' || !r.status) && (
                       <>
-                        <Button variant="outline" size="sm" onClick={() => handle(r.id, 'approve')}>{t('admin.refunds.approve')}</Button>
-                        <Button variant="destructive" size="sm" onClick={() => handle(r.id, 'reject')}>{t('admin.refunds.reject')}</Button>
+                        <Button variant="outline" size="sm" onClick={() => handle(r.id, 'approve')} disabled={processingId === r.id}>{t('admin.refunds.approve')}</Button>
+                        <Button variant="destructive" size="sm" onClick={() => handle(r.id, 'reject')} disabled={processingId === r.id}>{t('admin.refunds.reject')}</Button>
                       </>
                     )}
                     {r.status === 'approved' && (

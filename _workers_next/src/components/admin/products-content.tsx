@@ -30,29 +30,39 @@ interface AdminProductsContentProps {
 
 export function AdminProductsContent({ products, lowStockThreshold }: AdminProductsContentProps) {
     const { t } = useI18n()
+    const [busy, setBusy] = useState(false)
 
     const threshold = lowStockThreshold || 5
 
     const handleDelete = async (id: string) => {
+        if (busy) return
         if (!confirm(t('admin.products.confirmDelete'))) return
+        setBusy(true)
         try {
             await deleteProduct(id)
             toast.success(t('common.success'))
         } catch (e: any) {
             toast.error(e.message)
+        } finally {
+            setBusy(false)
         }
     }
 
     const handleToggle = async (id: string, currentStatus: boolean) => {
+        if (busy) return
+        setBusy(true)
         try {
             await toggleProductStatus(id, !currentStatus)
             toast.success(t('common.success'))
         } catch (e: any) {
             toast.error(e.message)
+        } finally {
+            setBusy(false)
         }
     }
 
     const handleReorder = async (id: string, direction: 'up' | 'down') => {
+        if (busy) return
         const idx = products.findIndex(p => p.id === id)
         if (idx === -1) return
 
@@ -63,6 +73,7 @@ export function AdminProductsContent({ products, lowStockThreshold }: AdminProdu
         const current = products[idx]
         const target = products[targetIdx]
 
+        setBusy(true)
         try {
             // Use index as sortOrder to ensure unique values
             await reorderProduct(current.id, targetIdx)
@@ -70,6 +81,8 @@ export function AdminProductsContent({ products, lowStockThreshold }: AdminProdu
             toast.success(t('common.success'))
         } catch (e: any) {
             toast.error(e.message)
+        } finally {
+            setBusy(false)
         }
     }
 
@@ -107,23 +120,23 @@ export function AdminProductsContent({ products, lowStockThreshold }: AdminProdu
                                     <div className="flex flex-col gap-1">
                                         <Button
                                             variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6"
-                                            onClick={() => handleReorder(product.id, 'up')}
-                                            disabled={idx === 0}
-                                        >
-                                            <ArrowUp className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6"
-                                            onClick={() => handleReorder(product.id, 'down')}
-                                            disabled={idx === products.length - 1}
-                                        >
-                                            <ArrowDown className="h-3 w-3" />
-                                        </Button>
-                                    </div>
+                                        size="icon"
+                                        className="h-6 w-6"
+                                        onClick={() => handleReorder(product.id, 'up')}
+                                        disabled={busy || idx === 0}
+                                    >
+                                        <ArrowUp className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6"
+                                        onClick={() => handleReorder(product.id, 'down')}
+                                        disabled={busy || idx === products.length - 1}
+                                    >
+                                        <ArrowDown className="h-3 w-3" />
+                                    </Button>
+                                </div>
                                 </TableCell>
                                 <TableCell className="font-medium">{product.name}</TableCell>
                                 <TableCell>
@@ -163,6 +176,7 @@ export function AdminProductsContent({ products, lowStockThreshold }: AdminProdu
                                         size="sm"
                                         onClick={() => handleToggle(product.id, product.isActive)}
                                         title={product.isActive ? t('admin.products.hide') : t('admin.products.show')}
+                                        disabled={busy}
                                     >
                                         {product.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                     </Button>
@@ -172,7 +186,7 @@ export function AdminProductsContent({ products, lowStockThreshold }: AdminProdu
                                     <Link href={`/admin/product/edit/${product.id}`}>
                                         <Button variant="outline" size="sm">{t('common.edit')}</Button>
                                     </Link>
-                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id)}>
+                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id)} disabled={busy}>
                                         {t('common.delete')}
                                     </Button>
                                 </TableCell>

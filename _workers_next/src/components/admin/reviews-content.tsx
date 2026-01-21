@@ -26,6 +26,7 @@ export function AdminReviewsContent({ reviews }: { reviews: ReviewRow[] }) {
   const { t } = useI18n()
   const [items, setItems] = useState(reviews)
   const [query, setQuery] = useState("")
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -46,13 +47,17 @@ export function AdminReviewsContent({ reviews }: { reviews: ReviewRow[] }) {
   }, [items, query])
 
   const handleDelete = async (id: number) => {
+    if (deletingId === id) return
     if (!confirm(t('common.confirm') + '?')) return
     try {
+      setDeletingId(id)
       await deleteReview(id)
       setItems((prev) => prev.filter((r) => r.id !== id))
       toast.success(t('common.success'))
     } catch (e: any) {
       toast.error(e.message)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -109,7 +114,7 @@ export function AdminReviewsContent({ reviews }: { reviews: ReviewRow[] }) {
                   <ClientDate value={r.createdAt} format="dateTime" />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button variant="destructive" size="sm" onClick={() => handleDelete(r.id)}>
+                  <Button variant="destructive" size="sm" onClick={() => handleDelete(r.id)} disabled={deletingId === r.id}>
                     {t('common.delete')}
                   </Button>
                 </TableCell>
